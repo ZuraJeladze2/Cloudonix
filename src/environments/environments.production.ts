@@ -1,3 +1,4 @@
 export const environments = {
-    production: true
+    production: true,
+    apiUrl: 'http://rest-items.research.cloudonix.io'
 }
