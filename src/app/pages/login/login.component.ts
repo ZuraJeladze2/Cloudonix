@@ -17,11 +17,7 @@ export class LoginComponent {
 
   onSubmit(form: NgForm) {
     if (form.valid) {
-      this.authService.login(this.authKey).pipe(
-        tap(x=>{
-          console.log('Form is valid, proceeding with login...');
-        })
-      ).subscribe()
+      this.authService.login(this.authKey).subscribe()
     } else {
       console.error('Form is invalid, please provide an authorization key.');
     }
