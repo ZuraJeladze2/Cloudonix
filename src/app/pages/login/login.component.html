@@ -1,2 +1,7 @@
-<p>login works!</p>
-<app-form></app-form>
+<form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
+  <mat-form-field>
+    <mat-label>Authorization Key</mat-label>
+    <input matInput [(ngModel)]="authKey" name="authKey" required>
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit">Login</button>
+</form>
