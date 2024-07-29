@@ -6,22 +6,22 @@ import { Observable, of, tap, catchError, take } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private authToken: string | null = null;
-  router: Router = inject(Router)
+  private authTokenKey = 'authToken';
+  router: Router = inject(Router);
 
   login(authKey: string): Observable<boolean> {
-    //double checking the token
+    // Double-checking the token
     if (authKey.length < 1) {
       console.error('Login failed: enter authKey');
-      return of(false); 
+      return of(false);
     }
 
-    this.authToken = authKey;
+    // Save token to localStorage
+    localStorage.setItem(this.authTokenKey, authKey);
 
     return of(true).pipe(
       tap(() => {
-        console.log('Login successful with token:', this.authToken);
-        this.router.navigate(['/products'])
+        this.router.navigate(['/products']);
       }),
       catchError(error => {
         console.error('Login failed', error);
@@ -30,8 +30,9 @@ export class AuthService {
       take(1)
     );
   }
+
   getAuthToken(): string | null {
-    return this.authToken;
+    return localStorage.getItem(this.authTokenKey);
   }
 
   isAuthenticated(): boolean {
@@ -39,6 +40,6 @@ export class AuthService {
   }
 
   logout(): void {
-    this.authToken = null;
+    localStorage.removeItem(this.authTokenKey);
   }
 }
