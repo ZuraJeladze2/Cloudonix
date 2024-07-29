@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { Product } from '../../core/interfaces/product.interface';
 
 @Component({
   selector: 'app-product-list',
@@ -16,14 +17,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 })
 export class ProductListComponent implements AfterViewInit, OnInit {
   productsService: ProductsService = inject(ProductsService);
-  products$: Observable<any> = this.productsService.getProducts().pipe(
+  products$: Observable<Product[]> = this.productsService.getProducts().pipe(
     tap(products => {
       console.table(products);
       this.dataSource.data = products;
     })
   );
   displayedColumns: string[] = ['id', 'name', 'sku', 'cost'];
-  dataSource: MatTableDataSource<any> = new MatTableDataSource();
+  dataSource: MatTableDataSource<Product> = new MatTableDataSource();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
