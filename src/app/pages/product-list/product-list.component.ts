@@ -10,11 +10,12 @@ import { Product } from '../../core/interfaces/product.interface';
 import { MatButtonModule } from '@angular/material/button'
 import { MatIcon } from '@angular/material/icon'
 import {MatTooltipModule} from '@angular/material/tooltip'
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [MatTableModule, MatInputModule, MatPaginatorModule, MatFormFieldModule, MatSortModule, MatButtonModule, MatIcon, MatTooltipModule],
+  imports: [MatTableModule, MatInputModule, MatPaginatorModule, MatFormFieldModule, MatSortModule, MatButtonModule, MatIcon, MatTooltipModule, RouterLink],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
 })
