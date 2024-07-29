@@ -7,11 +7,14 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Product } from '../../core/interfaces/product.interface';
+import { MatButtonModule } from '@angular/material/button'
+import { MatIcon } from '@angular/material/icon'
+import {MatTooltipModule} from '@angular/material/tooltip'
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [MatTableModule, MatInputModule, MatPaginatorModule, MatFormFieldModule, MatSortModule],
+  imports: [MatTableModule, MatInputModule, MatPaginatorModule, MatFormFieldModule, MatSortModule, MatButtonModule, MatIcon, MatTooltipModule],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
 })
@@ -23,7 +26,7 @@ export class ProductListComponent implements AfterViewInit, OnInit {
       this.dataSource.data = products;
     })
   );
-  displayedColumns: string[] = ['id', 'name', 'sku', 'cost'];
+  displayedColumns: string[] = ['id', 'name', 'sku', 'cost', 'actions'];
   dataSource: MatTableDataSource<Product> = new MatTableDataSource();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
