@@ -10,13 +10,14 @@ import { MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA, MatDialogRef } from 
 import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-form',
   standalone: true,
   imports: [
     MatCardModule, MatButtonModule, MatIcon,
-    MatDialogTitle, MatDialogContent, MatInputModule, MatSelectModule,
+    MatDialogTitle, MatDialogContent, MatInputModule, MatSelectModule, MatCheckboxModule,
     AsyncPipe, ReactiveFormsModule
   ],
   templateUrl: './form.component.html',

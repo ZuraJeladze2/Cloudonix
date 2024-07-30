@@ -11,7 +11,14 @@
 
     &-profile-fields{
         display: flex;
-        flex-flow: row wrap;
+        flex-flow: row nowrap;
         justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+    }
+    &-buttons{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 }

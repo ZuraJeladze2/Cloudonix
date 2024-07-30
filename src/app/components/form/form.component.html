@@ -29,21 +29,17 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field class="example-form-field">
-                <mat-label>available</mat-label>
-                <mat-select formControlName="available">
-                    <mat-option [value]="true">true</mat-option>
-                    <mat-option [value]="false">false</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class="example-form-field">
                 <mat-label>backlog</mat-label>
                 <input matInput type="number" formControlName="backlog">
             </mat-form-field>
+            <div class="example-form-field">
+                <mat-checkbox formControlName="available">Available</mat-checkbox>
+            </div>
         </div>
 
-        <div class="buttons">
-            <button mat-stroked-button (click)="editProduct(product.id)">Save</button>
+        <div class="form-buttons">
             <button mat-stroked-button color="warn" (click)="deleteProduct(product.id)">Delete</button>
+            <button mat-stroked-button (click)="editProduct(product.id)">Save</button>
         </div>
         <button mat-mini-fab class="form-close-icon" (click)="closeDialog()">
             <mat-icon>close</mat-icon>
