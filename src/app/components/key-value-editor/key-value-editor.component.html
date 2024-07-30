@@ -1,10 +1,10 @@
-<!-- key-value-editor.component.html -->
-@for(key of customProperties | keyvalue; track key){
+<form [formGroup]="pairForm">
+    @for(keyValuePair of customProperties['controls']; track $index; let i = $index){
     <div>
-        <input [(ngModel)]="key.key" (ngModelChange)="updateProperty(key.key, key.value)" placeholder="Key" />
-        <input [(ngModel)]="customProperties[key.key]" (ngModelChange)="updateProperty(key.key, customProperties[key.key])"
-            placeholder="Value" />
-        <button (click)="deleteProperty(key.key)">Delete</button>
+        <input formControlName="key" placeholder="Key" />
+        <input formControlName="value" placeholder="Value" />
+        <button (click)="deleteProperty(i)">Delete</button>
     </div>
-}
-<button (click)="addProperty()">Add Property</button>
+    }
+    <button (click)="addProperty()">Add Property</button>
+</form>

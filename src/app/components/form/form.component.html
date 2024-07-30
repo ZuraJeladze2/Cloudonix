@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <app-key-value-editor [customProperties]="form.get('profile.customProperties')?.value" (customPropertiesChange)="form.get('profile.customProperties')?.setValue($event)"></app-key-value-editor>
+        <app-key-value-editor [customProperties]="customProperties" (customPropertiesChange)="updateCustomProperties(customProperties)"></app-key-value-editor>
 
         <div class="form-buttons">
             <button mat-stroked-button color="warn" (click)="deleteProduct(product.id)">Delete</button>
