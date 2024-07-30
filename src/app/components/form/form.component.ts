@@ -26,28 +26,51 @@ export class FormComponent {
   product$: Observable<Product>
 
   form: FormGroup = new FormGroup({
-    name: new FormControl(''),
-    description: new FormControl(''),
-    sku: new FormControl(''),
+    name: new FormControl<string>(''),
+    description: new FormControl<string>(''),
+    sku: new FormControl<string>({ value: '', disabled: true }),
     cost: new FormControl(''),
-    // profile: new FormGroup({ //? or formArray,
-    //   type: //? because I have to add fields dynamically
-    // }),
+    profile: new FormGroup({
+      type: new FormControl('furniture'),
+      available: new FormControl<boolean>(true),
+      backlog: new FormControl<number | undefined>(undefined)
+    })
   })
-  
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: { productId: number }, public dialogRef: MatDialogRef<FormComponent>) {
     this.product$ = this.productsService.getProduct(this.data.productId).pipe(
       tap(product => this.form.patchValue(product))
     );
   }
 
-  closeDialog(){
+  closeDialog() {
     this.dialogRef.close()
   }
-  
-  deleteProduct(id: number){
+
+  editProduct(id: number) {
+    const rawValue = this.form.getRawValue();
+    const payload: Partial<Product> = {
+      name: rawValue.name || undefined,
+      description: rawValue.description || undefined,
+      cost: rawValue.cost || undefined,
+      profile: {
+        type: rawValue.profile?.type || 'furniture',
+        available: rawValue.profile?.available ?? true,
+        backlog: rawValue.profile?.backlog ? Number(rawValue.profile?.backlog) : undefined
+      }
+    };
+    console.log('Payload for update:', payload);
+    this.productsService.updateProduct(id, payload).pipe(
+      tap(x => {
+        console.log(`product "${x.name}" updated successfully!`);
+        this.dialogRef.close()
+      })
+    ).subscribe()
+  }
+
+  deleteProduct(id: number) {
     console.log('triggered');
-    
+
     this.productsService.deleteProduct(id).pipe(
       tap(() => {
         console.log(`product deleted successfully!`);
@@ -55,9 +78,4 @@ export class FormComponent {
       })
     ).subscribe()
   }
-  
-  ngAfterViewInit() {
-    console.log(this.data.productId);
-  }
-
 }
