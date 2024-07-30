@@ -8,7 +8,7 @@ import { Observable, of, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { KeyValueEditorComponent } from "../key-value-editor/key-value-editor.component";
@@ -21,80 +21,45 @@ import { KeyValueEditorComponent } from "../key-value-editor/key-value-editor.co
     MatDialogTitle, MatDialogContent, MatInputModule, MatSelectModule, MatCheckboxModule,
     AsyncPipe, ReactiveFormsModule,
     KeyValueEditorComponent
-],
+  ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
 export class FormComponent {
-  productsService: ProductsService = inject(ProductsService)
-  product$: Observable<Product>
-  profileTypes: readonly profileType[] = PROFILE_TYPES;
+  product$: Observable<Product>;
+  form: FormGroup = {} as FormGroup;
+  profileTypes = PROFILE_TYPES;
 
-
-  form: FormGroup = new FormGroup({
-    name: new FormControl<string>(''),
-    description: new FormControl<string>(''),
-    sku: new FormControl<string>({ value: '', disabled: true }),
-    cost: new FormControl<number>(0),
-    profile: new FormGroup({
-      type: new FormControl<profileType>('furniture'),
-      available: new FormControl<boolean>(true),
-      backlog: new FormControl<number | undefined>(undefined),
-      customProperties: new FormGroup({})
-    })
-  })
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { productId: number }, public dialogRef: MatDialogRef<FormComponent>) {
-    if (this.data.productId) {
-      this.product$ = this.productsService.getProduct(this.data.productId).pipe(
-        tap(product => this.form.patchValue(product))
-      );
-    }
-    else {
-      this.product$ = of({
-        id: 0,
-        name: '',
-        description: '',
-        sku: '',
-        cost: 0,
-        profile: {
-          type: 'furniture',
-          available: true,
-          backlog: undefined
-        }
+  constructor(
+    private fb: FormBuilder,
+    private productsService: ProductsService,
+    public dialogRef: MatDialogRef<FormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { productId: number }
+  ) {
+    this.form = this.fb.group({
+      name: [''],
+      description: [''],
+      sku: [{ value: '', disabled: true }],
+      cost: ['', [Validators.min(0), Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
+      profile: this.fb.group({
+        type: ['furniture'],
+        available: [true],
+        backlog: [null],
+        customProperties: this.fb.array([])
       })
-    }
+    });
 
+    this.product$ = this.productsService.getProduct(this.data.productId).pipe(
+      tap(product => this.form.patchValue(product))
+    );
+  }
+
+  get customProperties(): FormArray {
+    return this.form.get('profile.customProperties') as FormArray;
   }
 
   closeDialog() {
-    this.dialogRef.close()
-  }
-
-  createProduct() {
-    const rawValue = this.form.getRawValue();
-    const payload: Product = {
-      id: 0,
-      name: rawValue.name,
-      description: rawValue.description,
-      sku: rawValue.sku,
-      cost: rawValue.price,
-      profile: {
-        type: rawValue.profile?.type || 'furniture',
-        available: rawValue.profile?.available !== undefined ? rawValue.profile?.available : true,
-        backlog: rawValue.profile?.backlog ? Number(rawValue.profile?.backlog) : undefined,
-        ...rawValue.profile?.customProperties
-      }
-    };
-
-    console.log('Payload for creation:', payload);
-
-    this.productsService.createProduct(payload).pipe(
-      tap(x => {
-        console.log(`Product "${x.name}" created successfully!`);
-        this.dialogRef.close();
-      })
-    ).subscribe();
+    this.dialogRef.close();
   }
 
   editProduct(id: number) {
@@ -104,32 +69,51 @@ export class FormComponent {
       description: rawValue.description || undefined,
       cost: rawValue.cost || undefined,
       profile: {
-        type: rawValue.profile?.type || 'furniture',
-        available: rawValue.profile?.available ?? true,
-        backlog: rawValue.profile?.backlog ? Number(rawValue.profile?.backlog) : undefined
+        ...rawValue.profile,
+        customProperties: this.mapCustomProperties(this.customProperties.value)
       }
     };
-    console.log('Payload for update:', payload);
+
     this.productsService.updateProduct(id, payload).pipe(
       tap(x => {
-        console.log(`product "${x.name}" updated successfully!`);
-        this.dialogRef.close()
+        console.log(`Product "${x.name}" updated successfully!`);
+        this.dialogRef.close();
       })
-    ).subscribe()
+    ).subscribe();
   }
 
   deleteProduct(id: number) {
-    console.log('triggered');
-
     this.productsService.deleteProduct(id).pipe(
       tap(() => {
-        console.log(`product deleted successfully!`);
-        this.dialogRef.close()
+        console.log(`Product deleted successfully!`);
+        this.dialogRef.close();
       })
-    ).subscribe()
+    ).subscribe();
+  }
+
+  updateCustomProperties(customProperties: FormArray) {
+    console.log('Updating custom properties:', customProperties);
+    console.log(this.form.get('profile'));
+  
+    const profileField = this.form.get('profile') as FormGroup;
+    const customPropertiesValues = customProperties.value;
+    profileField.patchValue({ customProperties: customPropertiesValues });
+  }
+
+  mapCustomProperties(customProperties: FormArray): { [key: string]: string } {
+    const result: { [key: string]: string } = {};
+    console.warn(customProperties);
+
+    customProperties.controls.forEach(control => {
+      const { key, value } = control.value;
+      result[key] = value;
+    });
+    return result;
+  }
+
+  convertToFormArray(properties: { [key: string]: string }): FormArray {
+    return this.fb.array(
+      Object.entries(properties).map(([key, value]) => this.fb.group({ key, value }))
+    );
   }
 }
-
-
-
-
