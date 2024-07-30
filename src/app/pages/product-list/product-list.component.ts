@@ -11,12 +11,8 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatIcon } from '@angular/material/icon'
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { RouterLink } from '@angular/router';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog'; import { FormComponent } from '../../components/form/form.component';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogTitle,
-  MatDialogContent,
-} from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { FormComponent } from '../../components/form/form.component';
 
 @Component({
   selector: 'app-product-list',
