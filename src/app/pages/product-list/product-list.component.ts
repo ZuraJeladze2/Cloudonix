@@ -11,11 +11,17 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatIcon } from '@angular/material/icon'
 import {MatTooltipModule} from '@angular/material/tooltip'
 import { RouterLink } from '@angular/router';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';import { FormComponent } from '../../components/form/form.component';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogTitle,
+  MatDialogContent,
+} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [MatTableModule, MatInputModule, MatPaginatorModule, MatFormFieldModule, MatSortModule, MatButtonModule, MatIcon, MatTooltipModule, RouterLink],
+  imports: [MatTableModule, MatInputModule, MatPaginatorModule, MatFormFieldModule, MatSortModule, MatButtonModule, MatIcon, MatTooltipModule, MatDialogModule, RouterLink],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
 })
@@ -33,6 +39,20 @@ export class ProductListComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+  readonly dialog = inject(MatDialog);
+
+  openDialog(id: number) {
+    const dialogRef = this.dialog.open(FormComponent, {
+      data:{
+        productId: id
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+  
   ngOnInit() {
     this.products$.subscribe();
   }

@@ -35,7 +35,7 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
             <td mat-cell *matCellDef="let element" class="actions">
                 <mat-icon matTooltip="detailed view" matTooltipShowDelay="750" matTooltipPosition="above">perm_identity</mat-icon>
-                <mat-icon matTooltip="edit product" matTooltipShowDelay="750" matTooltipPosition="above">edit</mat-icon>
+                <mat-icon matTooltip="edit product" matTooltipShowDelay="750" matTooltipPosition="above" (click)="openDialog(element.id)">edit</mat-icon>
                 <mat-icon matTooltip="delete product" matTooltipShowDelay="750" matTooltipPosition="above" color="warn">delete</mat-icon>
             </td>
         </ng-container>
