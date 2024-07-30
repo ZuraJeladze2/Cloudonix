@@ -1,4 +1,11 @@
-.form{
+.form {
     position: relative;
     padding: 20px;
+    padding-top: 70px;
+
+    &-close-icon {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
 }
