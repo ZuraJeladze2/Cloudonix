@@ -1,9 +1,28 @@
-@if(product$ | async; as product){
-<mat-card appearance="outlined" class="form">
-    <h3> {{product.name}} </h3>
-    <p> {{product.description}} </p>
-    <span>SKU: {{product.sku}} </span>
-    <span>Cost: {{product.cost}} </span>
-    <span>Type: {{product.profile.type}} </span>
-</mat-card>
+@if (product$ | async; as product) {
+<form [formGroup]="form">
+    <mat-card appearance="outlined" class="form">
+        <mat-form-field class="example-form-field">
+            <mat-label>Name</mat-label>
+            <input matInput type="text" formControlName="name">
+        </mat-form-field>
+        <mat-form-field class="example-form-field">
+            <mat-label>Description</mat-label>
+            <textarea matInput type="text" formControlName="description">
+            </textarea>
+        </mat-form-field>
+        <mat-form-field class="example-form-field">
+            <mat-label>SKU</mat-label>
+            <input matInput type="text" formControlName="sku">
+        </mat-form-field>
+        <mat-form-field class="example-form-field">
+            <mat-label>Cost</mat-label>
+            <input matInput type="number" formControlName="cost">
+        </mat-form-field>
+
+        <button mat-stroked-button>Save</button>
+        <button mat-mini-fab class="form-close-icon" (click)="closeDialog()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-card>
+</form>
 }
