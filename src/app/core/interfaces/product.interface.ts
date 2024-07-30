@@ -6,8 +6,9 @@ export interface Product {
     cost: number
     profile: {
         type: profileType,
-        available?: boolean,
-        backlog?: number
+        available: boolean,
+        backlog: number | undefined
     }
 }
-type profileType = 'furniture' | 'equipment' | 'stationary' | 'part'
+export const PROFILE_TYPES = ['furniture', 'equipment', 'stationary', 'part'] as const
+export type profileType = typeof PROFILE_TYPES[number]

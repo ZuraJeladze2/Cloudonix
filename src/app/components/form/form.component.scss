@@ -8,4 +8,10 @@
         top: 15px;
         right: 15px;
     }
+
+    &-profile-fields{
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+    }
 }
