@@ -9,7 +9,7 @@ export interface Product {
         available: boolean,
         backlog: number | undefined
         customProperties?: {
-            [key: string]: any; // Index signature to allow any key-value pairs
+            [key: string]: string; // Index signature to allow any key-value pairs
         };
     }
 }

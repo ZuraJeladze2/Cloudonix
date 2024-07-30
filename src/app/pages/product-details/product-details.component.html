@@ -4,7 +4,7 @@
         <p>{{product.description}}</p>
         <p>SKU: {{product.sku}}</p>
         <p>Type: {{product.profile.type}}</p>
-
+        <pre> {{product.profile.customProperties | json}} </pre>
 
         <button mat-mini-fab class="card-edit-icon">
             <mat-icon>edit</mat-icon>
