@@ -70,7 +70,7 @@ export class FormComponent {
       cost: rawValue.cost || undefined,
       profile: {
         ...rawValue.profile,
-        customProperties: this.mapCustomProperties(this.customProperties.value)
+        customProperties: this.mapCustomProperties(this.customProperties)
       }
     };
 
