@@ -25,7 +25,7 @@ export class ProductsService {
     return this.http.post<Product>(`${this.apiUrl}/items`, product).pipe(take(1))
   }
 
-  updateProduct(id: number, updatedProduct: Product): Observable<Product>{
+  updateProduct(id: number, updatedProduct: Partial<Product>): Observable<Product>{
     return this.http.patch<Product>(`${this.apiUrl}/items/${id}`, updatedProduct).pipe(take(1))
   }
 
