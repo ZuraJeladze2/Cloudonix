@@ -1,0 +1,10 @@
+<!-- key-value-editor.component.html -->
+@for(key of customProperties | keyvalue; track key){
+    <div>
+        <input [(ngModel)]="key.key" (ngModelChange)="updateProperty(key.key, key.value)" placeholder="Key" />
+        <input [(ngModel)]="customProperties[key.key]" (ngModelChange)="updateProperty(key.key, customProperties[key.key])"
+            placeholder="Value" />
+        <button (click)="deleteProperty(key.key)">Delete</button>
+    </div>
+}
+<button (click)="addProperty()">Add Property</button>

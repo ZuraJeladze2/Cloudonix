@@ -4,13 +4,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Product, PROFILE_TYPES, profileType } from '../../core/interfaces/product.interface';
 import { ProductsService } from '../../core/services/products.service';
-import { Observable, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { KeyValueEditorComponent } from "../key-value-editor/key-value-editor.component";
 
 @Component({
   selector: 'app-form',
@@ -18,8 +19,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
   imports: [
     MatCardModule, MatButtonModule, MatIcon,
     MatDialogTitle, MatDialogContent, MatInputModule, MatSelectModule, MatCheckboxModule,
-    AsyncPipe, ReactiveFormsModule
-  ],
+    AsyncPipe, ReactiveFormsModule,
+    KeyValueEditorComponent
+],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
@@ -27,7 +29,7 @@ export class FormComponent {
   productsService: ProductsService = inject(ProductsService)
   product$: Observable<Product>
   profileTypes: readonly profileType[] = PROFILE_TYPES;
-  
+
 
   form: FormGroup = new FormGroup({
     name: new FormControl<string>(''),
@@ -37,18 +39,62 @@ export class FormComponent {
     profile: new FormGroup({
       type: new FormControl<profileType>('furniture'),
       available: new FormControl<boolean>(true),
-      backlog: new FormControl<number | undefined>(undefined)
+      backlog: new FormControl<number | undefined>(undefined),
+      customProperties: new FormGroup({})
     })
   })
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { productId: number }, public dialogRef: MatDialogRef<FormComponent>) {
-    this.product$ = this.productsService.getProduct(this.data.productId).pipe(
-      tap(product => this.form.patchValue(product))
-    );
+    if (this.data.productId) {
+      this.product$ = this.productsService.getProduct(this.data.productId).pipe(
+        tap(product => this.form.patchValue(product))
+      );
+    }
+    else {
+      this.product$ = of({
+        id: 0,
+        name: '',
+        description: '',
+        sku: '',
+        cost: 0,
+        profile: {
+          type: 'furniture',
+          available: true,
+          backlog: undefined
+        }
+      })
+    }
+
   }
 
   closeDialog() {
     this.dialogRef.close()
+  }
+
+  createProduct() {
+    const rawValue = this.form.getRawValue();
+    const payload: Product = {
+      id: 0,
+      name: rawValue.name,
+      description: rawValue.description,
+      sku: rawValue.sku,
+      cost: rawValue.price,
+      profile: {
+        type: rawValue.profile?.type || 'furniture',
+        available: rawValue.profile?.available !== undefined ? rawValue.profile?.available : true,
+        backlog: rawValue.profile?.backlog ? Number(rawValue.profile?.backlog) : undefined,
+        ...rawValue.profile?.customProperties
+      }
+    };
+
+    console.log('Payload for creation:', payload);
+
+    this.productsService.createProduct(payload).pipe(
+      tap(x => {
+        console.log(`Product "${x.name}" created successfully!`);
+        this.dialogRef.close();
+      })
+    ).subscribe();
   }
 
   editProduct(id: number) {
@@ -83,3 +129,7 @@ export class FormComponent {
     ).subscribe()
   }
 }
+
+
+
+
