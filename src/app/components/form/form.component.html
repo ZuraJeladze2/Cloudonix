@@ -1,1 +1,9 @@
-<p>form works!</p>
+@if(product$ | async; as product){
+<mat-card appearance="outlined" class="form">
+    <h3> {{product.name}} </h3>
+    <p> {{product.description}} </p>
+    <span>SKU: {{product.sku}} </span>
+    <span>Cost: {{product.cost}} </span>
+    <span>Type: {{product.profile.type}} </span>
+</mat-card>
+}
