@@ -45,6 +45,17 @@ export class FormComponent {
     this.dialogRef.close()
   }
   
+  deleteProduct(id: number){
+    console.log('triggered');
+    
+    this.productsService.deleteProduct(id).pipe(
+      tap(() => {
+        console.log(`product deleted successfully!`);
+        this.dialogRef.close()
+      })
+    ).subscribe()
+  }
+  
   ngAfterViewInit() {
     console.log(this.data.productId);
   }
