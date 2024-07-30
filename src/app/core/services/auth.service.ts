@@ -16,7 +16,6 @@ export class AuthService {
       return of(false);
     }
 
-    // Save token to localStorage
     localStorage.setItem(this.authTokenKey, authKey);
 
     return of(true).pipe(

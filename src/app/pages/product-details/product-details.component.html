@@ -1,8 +1,13 @@
 @if(product$ | async; as product){
-    <div class="card">
+    <mat-card appearance="outlined" class="card">
         <h3>{{product.name}}</h3>
         <p>{{product.description}}</p>
         <p>SKU: {{product.sku}}</p>
         <p>Type: {{product.profile.type}}</p>
-    </div>
+
+
+        <button mat-mini-fab class="card-edit-icon">
+            <mat-icon>edit</mat-icon>
+        </button>
+    </mat-card>
 }

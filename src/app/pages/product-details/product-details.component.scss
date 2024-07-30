@@ -1,0 +1,11 @@
+.card{
+    position: relative;
+    padding: 20px;
+    margin: 100px; //temp
+
+    &-edit-icon{
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+}
