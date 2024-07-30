@@ -2,20 +2,21 @@ import { Component, Inject, inject, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { Product } from '../../core/interfaces/product.interface';
+import { Product, PROFILE_TYPES, profileType } from '../../core/interfaces/product.interface';
 import { ProductsService } from '../../core/services/products.service';
 import { Observable, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-form',
   standalone: true,
   imports: [
     MatCardModule, MatButtonModule, MatIcon,
-    MatDialogTitle, MatDialogContent, MatInputModule,
+    MatDialogTitle, MatDialogContent, MatInputModule, MatSelectModule,
     AsyncPipe, ReactiveFormsModule
   ],
   templateUrl: './form.component.html',
@@ -24,14 +25,16 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 export class FormComponent {
   productsService: ProductsService = inject(ProductsService)
   product$: Observable<Product>
+  profileTypes: readonly profileType[] = PROFILE_TYPES;
+  
 
   form: FormGroup = new FormGroup({
     name: new FormControl<string>(''),
     description: new FormControl<string>(''),
     sku: new FormControl<string>({ value: '', disabled: true }),
-    cost: new FormControl(''),
+    cost: new FormControl<number>(0),
     profile: new FormGroup({
-      type: new FormControl('furniture'),
+      type: new FormControl<profileType>('furniture'),
       available: new FormControl<boolean>(true),
       backlog: new FormControl<number | undefined>(undefined)
     })
