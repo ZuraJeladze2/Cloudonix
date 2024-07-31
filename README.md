@@ -12,6 +12,6 @@ Built with:
 
 ## How to run
 
-After cloning the repository and opening it with IDE, traditionally run `npm i` to install node modules, then open terminal and run `ng serve` to run the app.
+After cloning the repository and opening it with an IDE, traditionally run `npm i` to install node modules, then open terminal and run `ng serve` to run the app.
 
 ### That's it, congratulations, hope you'll like it!
