@@ -1,7 +1,12 @@
-<form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
-  <mat-form-field>
-    <mat-label>Authorization Key</mat-label>
-    <input matInput [(ngModel)]="authKey" name="authKey" required>
-  </mat-form-field>
-  <button mat-raised-button color="primary" type="submit">Login</button>
-</form>
+<div class="overlay">
+  <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
+    <mat-card appearance="outlined" class="login-card">
+      <h2>Login</h2>
+      <mat-form-field>
+        <mat-label>Authorization Key</mat-label>
+        <input matInput [(ngModel)]="authKey" name="authKey" required>
+      </mat-form-field>
+      <button mat-stroked-button color="primary" type="submit">Login</button>
+    </mat-card>
+  </form>
+</div>
