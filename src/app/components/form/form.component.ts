@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Product, PROFILE_TYPES, profileType } from '../../core/interfaces/product.interface';
 import { ProductsService } from '../../core/services/products.service';
-import { Observable, tap } from 'rxjs';
+import { catchError, Observable, of, tap, throwError } from 'rxjs';
 import { AsyncPipe, NgFor } from '@angular/common';
 import { MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
@@ -24,7 +24,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
   styleUrls: ['./form.component.scss']
 })
 export class FormComponent {
-
   productsService: ProductsService = inject(ProductsService)
   product$: Observable<Product>
   profileTypes: readonly profileType[] = PROFILE_TYPES;
@@ -39,21 +38,26 @@ export class FormComponent {
     profile: new FormGroup({
       type: new FormControl<profileType>('furniture', Validators.required),
       available: new FormControl<boolean>(true),
-      backlog: new FormControl<number | undefined>(undefined),
+      backlog: new FormControl<number>(0),
       customProperties: new FormArray([])
     })
   })
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { productId: number }, public dialogRef: MatDialogRef<FormComponent>) {
-    this.product$ = this.productsService.getProduct(this.data.productId).pipe(
-      tap(product => {
-        console.log(`Product "${product.name}" loaded successfully!`, product.profile.customProperties);
-      }),
-      tap(product => this.patchProductValues(product)),
-
-    );
+    if (this.data.productId) {
+      this.product$ = this.productsService.getProduct(this.data.productId).pipe(
+        tap(product => {
+          console.log(`Product "${product.name}" loaded successfully!`, product.profile.customProperties);
+        }),
+        tap(product => this.patchProductValues(product)),
+      );
+    }
+    else {
+      this.product$ = of({} as Product);
+      this.form.controls['sku'].enable();
+    }
   }
-  
+
   patchProductValues(product: Product) {
     this.form.patchValue({
       name: product.name,
@@ -84,6 +88,49 @@ export class FormComponent {
     this.dialogRef.close();
   }
 
+  saveProduct(id?: number) {
+    console.log('saveProduct', id);
+    
+    id ? this.editProduct(id) : this.createProduct();
+  }
+
+  createProduct() {
+    const rawValue = this.form.getRawValue();
+    const payload: Product = {
+      id: Math.floor(Math.random() * 10000),
+      name: rawValue.name || undefined,
+      description: rawValue.description || undefined,
+      sku: rawValue.sku || undefined,
+      cost: rawValue.cost || undefined,
+      profile: {
+        ...rawValue.profile,
+      }
+    };
+
+    console.log(...rawValue.profile.customProperties);
+    console.log(this.customProperties.value);
+    console.log(payload);
+
+    if (this.form.valid) {
+      this.productsService.createProduct(payload).pipe(
+        tap(x => {
+          console.log(`Product "${x.name}" created successfully!`, x.profile.customProperties);
+          this.dialogRef.close();
+        }),
+        catchError(err => {
+          console.log('hahaha error happens here!');
+
+          return throwError(() => err)
+        })
+      ).subscribe();
+    } else {
+      // Handle invalid form case
+      const invalidControls = Object.keys(this.form.controls).filter(controlName => this.form.controls[controlName].invalid);
+      console.log('Form is invalid. Please fill in all required fields.');
+      console.log('Invalid controls:', invalidControls);
+    }
+  }
+
   editProduct(id: number) {
     const rawValue = this.form.getRawValue();
     const payload: Partial<Product> = {
@@ -104,6 +151,11 @@ export class FormComponent {
         tap(x => {
           console.log(`Product "${x.name}" updated successfully!`, x.profile.customProperties);
           this.dialogRef.close();
+        }),
+        catchError(err => {
+          console.log('hahaha error happens here!');
+
+          return throwError(() => err)
         })
       ).subscribe();
     } else {

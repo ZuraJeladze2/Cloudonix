@@ -37,11 +37,11 @@ export class ProductListComponent implements AfterViewInit, OnInit {
 
   readonly dialog = inject(MatDialog);
 
-  openDialog(id: number) {
+  openDialog(id?: number) {
     const dialogRef = this.dialog.open(FormComponent, {
       width: '560px',
       maxHeight: '90vh',
-      data: { productId: id }
+      data: id ? { productId: id } : {}
     });
 
     dialogRef.afterClosed().subscribe(result => {
