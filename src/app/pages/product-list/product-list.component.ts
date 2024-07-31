@@ -1,5 +1,5 @@
 import { Component, inject, ViewChild, AfterViewInit, OnInit } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, pipe, take, tap } from 'rxjs';
 import { ProductsService } from '../../core/services/products.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
@@ -10,9 +10,10 @@ import { Product } from '../../core/interfaces/product.interface';
 import { MatButtonModule } from '@angular/material/button'
 import { MatIcon } from '@angular/material/icon'
 import { MatTooltipModule } from '@angular/material/tooltip'
-import { RouterLink } from '@angular/router';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Router, RouterLink } from '@angular/router';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FormComponent } from '../../components/form/form.component';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-product-list',
@@ -23,6 +24,7 @@ import { FormComponent } from '../../components/form/form.component';
 })
 export class ProductListComponent implements AfterViewInit, OnInit {
   productsService: ProductsService = inject(ProductsService);
+  router: Router = inject(Router);
   products$: Observable<Product[]> = this.productsService.products$.pipe(
     tap(products => {
       console.table(products);
@@ -56,6 +58,28 @@ export class ProductListComponent implements AfterViewInit, OnInit {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  openConfirmationDialog(id: number) {
+    const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '560px',
+      height: '200px',
+    });
+
+    confirmDialogRef.afterClosed().pipe(
+      tap(result => {
+        if (result) {
+          this.productsService.deleteProduct(id).pipe(
+            tap(() => {
+              console.log(`Product deleted successfully!`);
+              this.router.navigate(['/products']);
+            }),
+            take(1)
+          ).subscribe();
+        }
+      }),
+      take(1)
+    ).subscribe();
   }
 
   applyFilter(event: Event) {
