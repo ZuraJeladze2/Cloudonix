@@ -1,10 +1,12 @@
 <h1>product-list works!</h1>
 
-
 <mat-form-field class="filter-input">
     <mat-label>Filter</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
 </mat-form-field>
+<button class="add-button" (click)="openDialog()" color="primary" mat-mini-fab>
+    <mat-icon>add</mat-icon>
+</button>
 
 <div class="mat-elevation-z8 table-wrapper">
 
