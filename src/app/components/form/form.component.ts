@@ -35,7 +35,7 @@ export class FormComponent {
     name: new FormControl<string>('', Validators.required),
     description: new FormControl<string>('', Validators.required),
     sku: new FormControl<string>({ value: '', disabled: true }),
-    cost: new FormControl<number>(0, Validators.required),
+    cost: new FormControl<number>(0, [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]),
     profile: new FormGroup({
       type: new FormControl<profileType>('furniture', Validators.required),
       available: new FormControl<boolean>(true),
