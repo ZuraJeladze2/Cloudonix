@@ -113,8 +113,6 @@ export class FormComponent {
   }
 
   saveProduct(id?: number) {
-    console.log('saveProduct', id);
-
     id ? this.editProduct(id) : this.createProduct();
   }
 
