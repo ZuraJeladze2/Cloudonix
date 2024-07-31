@@ -1,17 +1,16 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Product, PROFILE_TYPES } from '../../core/interfaces/product.interface';
+import { Product, PROFILE_TYPES, profileType } from '../../core/interfaces/product.interface';
 import { ProductsService } from '../../core/services/products.service';
 import { Observable, tap } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgFor } from '@angular/common';
 import { MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { KeyValueEditorComponent } from '../key-value-editor/key-value-editor.component';
 
 @Component({
   selector: 'app-form',
@@ -19,74 +18,36 @@ import { KeyValueEditorComponent } from '../key-value-editor/key-value-editor.co
   imports: [
     MatCardModule, MatButtonModule, MatIconModule,
     MatDialogTitle, MatDialogContent, MatInputModule, MatSelectModule, MatCheckboxModule,
-    AsyncPipe, ReactiveFormsModule,
-    KeyValueEditorComponent
+    AsyncPipe, ReactiveFormsModule, NgFor
   ],
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss']
 })
 export class FormComponent {
-  product$: Observable<Product>;
-  form: FormGroup;
-  profileTypes = PROFILE_TYPES;
 
-  constructor(
-    private fb: FormBuilder,
-    private productsService: ProductsService,
-    public dialogRef: MatDialogRef<FormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { productId: number }
-  ) {
-    this.form = this.fb.group({
-      name: [''],
-      description: [''],
-      sku: [{ value: '', disabled: true }],
-      cost: ['', [Validators.min(0), Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
-      profile: this.fb.group({
-        type: ['furniture'],
-        available: [true],
-        backlog: [null],
-        customProperties: this.fb.array([])
-      })
-    });
+  productsService: ProductsService = inject(ProductsService)
+  product$: Observable<Product>
+  profileTypes: readonly profileType[] = PROFILE_TYPES;
+  fb: FormBuilder = inject(FormBuilder)
 
-    const productId = this.data.productId;
 
-    this.product$ = this.productsService.getProduct(productId).pipe(
-      tap(product => {
-        console.log('Product:', product, 'form:', this.form);
-      }),
-      tap(product => this.patchProductValues(product))
+  form: FormGroup = new FormGroup({
+    name: new FormControl<string>(''),
+    description: new FormControl<string>(''),
+    sku: new FormControl<string>({ value: '', disabled: true }),
+    cost: new FormControl<number>(0),
+    profile: new FormGroup({
+      type: new FormControl<profileType>('furniture'),
+      available: new FormControl<boolean>(true),
+      backlog: new FormControl<number | undefined>(undefined),
+      customProperties: new FormArray([])
+    })
+  })
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { productId: number }, public dialogRef: MatDialogRef<FormComponent>) {
+    this.product$ = this.productsService.getProduct(this.data.productId).pipe(
+      tap(product => this.form.patchValue(product))
     );
-  }
-
-  get customProperties(): FormArray {
-    return this.form.get('profile.customProperties') as FormArray;
-  }
-
-  patchProductValues(product: Product) {
-    const customPropertiesArray = this.form.get('profile.customProperties') as FormArray;
-    customPropertiesArray.clear();
-
-    if (product.profile.customProperties) {
-      Object.entries(product.profile.customProperties).forEach(([key, value]) => {
-        customPropertiesArray.push(this.fb.group({
-          key: [key],
-          value: [value]
-        }));
-      });
-    }
-
-    this.form.patchValue({
-      name: product.name,
-      description: product.description,
-      sku: product.sku,
-      cost: product.cost,
-      profile: {
-        type: product.profile.type,
-        available: product.profile.available,
-        backlog: product.profile.backlog
-      }
-    });
   }
 
   closeDialog() {
@@ -101,7 +62,7 @@ export class FormComponent {
       cost: rawValue.cost || undefined,
       profile: {
         ...rawValue.profile,
-        customProperties: this.mapCustomProperties(this.customProperties)
+        // customProperties: this.mapCustomProperties(this.customProperties)
       }
     };
 
@@ -128,26 +89,29 @@ export class FormComponent {
     ).subscribe();
   }
 
-  updateCustomProperties(customProperties: FormArray) {
-    const profileField = this.form.get('profile') as FormGroup;
-    const customPropertiesValues = customProperties.value;
-    profileField.patchValue({ customProperties: customPropertiesValues });
+
+
+
+  //customProperties
+  addField(key: string, value: any) {
+    const customProperties = this.form.get('profile.customProperties') as FormArray;
+    if (customProperties) {
+      const newField = this.fb.group({
+        key: [key],
+        value: [value]
+      });
+      customProperties.push(newField);
+    }
   }
 
-  mapCustomProperties(customProperties: FormArray): { [key: string]: string } {
-    const result: { [key: string]: string } = {};
-
-    customProperties.controls.forEach(control => {
-      const { key, value } = control.value;
-      result[key] = value;
-    });
-
-    return result;
+  get customProperties(): FormArray {
+    return this.form.get('profile.customProperties') as FormArray;
+  }
+  removeField(index: number) {
+    const customProperties = this.form.get('profile.customProperties') as FormArray;
+    if (customProperties) {
+      customProperties.removeAt(index);
+    }
   }
 
-  convertToFormArray(properties: { [key: string]: string }): FormArray {
-    return this.fb.array(
-      Object.entries(properties).map(([key, value]) => this.fb.group({ key, value }))
-    );
-  }
 }

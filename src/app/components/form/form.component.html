@@ -1,51 +1,76 @@
 @if (product$ | async; as product) {
-<form [formGroup]="form">
-    <mat-card appearance="outlined" class="form">
-        <mat-form-field class="example-form-field">
-            <mat-label>Name</mat-label>
-            <input matInput type="text" formControlName="name">
-        </mat-form-field>
-        <mat-form-field class="example-form-field">
-            <mat-label>Description</mat-label>
-            <textarea matInput type="text" formControlName="description">
-            </textarea>
-        </mat-form-field>
-        <mat-form-field class="example-form-field">
-            <mat-label>SKU</mat-label>
-            <input matInput type="text" formControlName="sku">
-        </mat-form-field>
-        <mat-form-field class="example-form-field">
-            <mat-label>Cost</mat-label>
-            <input matInput type="number" formControlName="cost">
-        </mat-form-field>
-
-        <div class="form-profile-fields" formGroupName="profile">
+    <form [formGroup]="form">
+        <mat-card appearance="outlined" class="form">
             <mat-form-field class="example-form-field">
-                <mat-label>type</mat-label>
-                <mat-select formControlName="type">
-                    @for(profileType of profileTypes; track profileType){
-                    <mat-option [value]="profileType"> {{profileType}} </mat-option>
-                    }
-                </mat-select>
+                <mat-label>Name</mat-label>
+                <input matInput type="text" formControlName="name">
             </mat-form-field>
             <mat-form-field class="example-form-field">
-                <mat-label>backlog</mat-label>
-                <input matInput type="number" formControlName="backlog">
+                <mat-label>Description</mat-label>
+                <textarea matInput type="text" formControlName="description">
+                </textarea>
             </mat-form-field>
-            <div class="example-form-field">
-                <mat-checkbox formControlName="available">Available</mat-checkbox>
+            <mat-form-field class="example-form-field">
+                <mat-label>SKU</mat-label>
+                <input matInput type="text" formControlName="sku">
+            </mat-form-field>
+            <mat-form-field class="example-form-field">
+                <mat-label>Cost</mat-label>
+                <input matInput type="number" formControlName="cost">
+            </mat-form-field>
+    
+            <div class="form-profile-fields" formGroupName="profile">
+                <div class="form-profile-fields-general">
+                    <mat-form-field class="example-form-field">
+                        <mat-label>type</mat-label>
+                        <mat-select formControlName="type">
+                            @for(profileType of profileTypes; track profileType){
+                            <mat-option [value]="profileType"> {{profileType}} </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field class="example-form-field">
+                        <mat-label>backlog</mat-label>
+                        <input matInput type="number" formControlName="backlog">
+                    </mat-form-field>
+                    <div class="example-form-field">
+                        <mat-checkbox formControlName="available">Available</mat-checkbox>
+                    </div>
+                </div>
+    
+                <div class="form-profile-fields-general-custom">
+                    <div formArrayName="customProperties">
+                        <div class="dynamic-field" *ngFor="let field of customProperties.controls; let i = index"
+                            [formGroupName]="i">
+                            <mat-form-field class="example-form-field">
+                                <mat-label>Key</mat-label>
+                                <input matInput type="text" formControlName="key">
+                            </mat-form-field>
+                            <mat-form-field class="example-form-field">
+                                <mat-label>Value</mat-label>
+                                <input matInput type="text" formControlName="value">
+                            </mat-form-field>
+                            <button mat-icon-button color="warn" (click)="removeField(i)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button mat-stroked-button (click)="addField('', '')">Add Field</button>
             </div>
-        </div>
-
-        <app-key-value-editor [customProperties]="customProperties" (customPropertiesChange)="updateCustomProperties(customProperties)"></app-key-value-editor>
-
-        <div class="form-buttons">
-            <button mat-stroked-button color="warn" (click)="deleteProduct(product.id)">Delete</button>
-            <button mat-stroked-button (click)="editProduct(product.id)">Save</button>
-        </div>
-        <button mat-mini-fab class="form-close-icon" (click)="closeDialog()">
-            <mat-icon>close</mat-icon>
-        </button>
-    </mat-card>
-</form>
-}
+    
+    
+    
+    
+    
+    
+            <div class="form-buttons">
+                <button mat-stroked-button color="warn" (click)="deleteProduct(product.id)">Delete</button>
+                <button mat-stroked-button (click)="editProduct(product.id)">Save</button>
+            </div>
+            <button mat-mini-fab class="form-close-icon" (click)="closeDialog()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-card>
+    </form>
+    }
