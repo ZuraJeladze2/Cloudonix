@@ -10,15 +10,19 @@
             <textarea matInput type="text" formControlName="description">
                     </textarea>
         </mat-form-field>
-        <mat-form-field class="example-form-field">
-            <mat-label>SKU</mat-label>
-            <input matInput type="text" formControlName="sku">
-        </mat-form-field>
-        <mat-form-field class="example-form-field">
-            <mat-label>Cost</mat-label>
-            <input matInput type="number" formControlName="cost">
-        </mat-form-field>
 
+        <div class="f-row">
+            <mat-form-field class="example-form-field">
+                <mat-label>SKU</mat-label>
+                <input matInput type="text" formControlName="sku">
+            </mat-form-field>
+            <mat-form-field class="example-form-field">
+                <mat-label>Cost</mat-label>
+                <mat-icon matSuffix>attach_money</mat-icon>
+                <input matInput type="number" formControlName="cost">
+            </mat-form-field>
+        </div>
+        
         <div class="form-profile-fields" formGroupName="profile">
             <div class="form-profile-fields-general">
                 <mat-form-field class="example-form-field">
