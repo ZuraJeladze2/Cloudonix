@@ -50,7 +50,8 @@ export class FormComponent {
     @Inject(MAT_DIALOG_DATA) public data: { productId: number },
     public dialogRef: MatDialogRef<FormComponent>
   ) {
-    if (this.data.productId) {
+    // check if productId is a number. using this way because if I wrote if (this.data.productId) it will be false if it's 0
+    if (!isNaN(this.data.productId)) {
       this.product$ = this.productsService.getProduct(this.data.productId).pipe(
         tap(product => {
           console.log(`Product "${product.name}" loaded successfully!`, product.profile.customProperties);
