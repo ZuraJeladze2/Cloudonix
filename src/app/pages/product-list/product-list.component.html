@@ -36,9 +36,19 @@
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
             <td mat-cell *matCellDef="let element" class="actions">
-                <mat-icon matTooltip="detailed view" matTooltipShowDelay="750" matTooltipPosition="above">perm_identity</mat-icon>
-                <mat-icon matTooltip="edit product" matTooltipShowDelay="750" matTooltipPosition="above" (click)="openDialog(element.id)">edit</mat-icon>
-                <mat-icon matTooltip="delete product" matTooltipShowDelay="750" matTooltipPosition="above" color="warn" (click)="openConfirmationDialog(element.id)">delete</mat-icon>
+                <div class="action-buttons-wrapper">
+                    <a [routerLink]="['/products', element.id]">
+                        <button mat-mini-fab>
+                            <mat-icon matTooltip="detailed view" matTooltipShowDelay="750" matTooltipPosition="above">perm_identity</mat-icon>
+                        </button>
+                    </a>
+                    <button mat-mini-fab>
+                        <mat-icon matTooltip="edit product" matTooltipShowDelay="750" matTooltipPosition="above" (click)="openDialog(element.id)">edit</mat-icon>
+                    </button>
+                    <button mat-mini-fab>
+                        <mat-icon matTooltip="delete product" matTooltipShowDelay="750" matTooltipPosition="above" color="warn" (click)="openConfirmationDialog(element.id)">delete</mat-icon>
+                    </button>
+                </div>
             </td>
         </ng-container>
 

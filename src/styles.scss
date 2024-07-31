@@ -6,3 +6,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     justify-content: space-between;
     align-items: center;
 }
+
+
+table .actions button{
+    scale: 0.7;
+}
+
+.mdc-data-table__cell.actions, .mdc-data-table__header-cell.actions {
+    padding: 0 !important;
+}
