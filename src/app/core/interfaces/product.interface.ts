@@ -8,9 +8,7 @@ export interface Product {
         type: profileType,
         available: boolean,
         backlog: number | undefined
-        customProperties?: {
-            [key: string]: string; // Index signature to allow any key-value pairs
-        };
+        customProperties?: Array<{ key: string; value: string }>;
     }
 }
 export const PROFILE_TYPES = ['furniture', 'equipment', 'stationary', 'part'] as const

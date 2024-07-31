@@ -1,8 +1,10 @@
 <form [formGroup]="pairForm">
-    @for(keyValuePair of customProperties['controls']; track $index; let i = $index){
+    <h4>Custom Properties</h4>
+    @for(keyValuePair of customProperties.value; track $index; let i = $index){
     <div>
-        <input formControlName="key" placeholder="Key" />
-        <input formControlName="value" placeholder="Value" />
+        <p> {{keyValuePair['key']}}: {{keyValuePair['value']}} </p>
+        <input formControlName="key" [placeholder]="keyValuePair['key']"/>
+        <input formControlName="value" [placeholder]="keyValuePair['value']"/>
         <button (click)="deleteProperty(i)">Delete</button>
     </div>
     }
