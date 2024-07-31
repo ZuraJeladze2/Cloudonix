@@ -12,6 +12,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Va
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-form',
@@ -26,10 +27,11 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 })
 export class FormComponent {
   productsService: ProductsService = inject(ProductsService)
-  product$: Observable<Product>
-  profileTypes: readonly profileType[] = PROFILE_TYPES;
   fb: FormBuilder = inject(FormBuilder)
   dialog: MatDialog = inject(MatDialog);
+  router: Router = inject(Router);
+  product$: Observable<Product>
+  profileTypes: readonly profileType[] = PROFILE_TYPES;
 
   form: FormGroup = new FormGroup({
     name: new FormControl<string>('', Validators.required),
@@ -193,6 +195,7 @@ export class FormComponent {
     this.productsService.deleteProduct(id).pipe(
       tap(() => {
         console.log(`Product deleted successfully!`);
+        this.router.navigate(['/products']);
         this.dialogRef.close();
       })
     ).subscribe();
