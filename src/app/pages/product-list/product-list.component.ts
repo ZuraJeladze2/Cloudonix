@@ -23,12 +23,12 @@ import { FormComponent } from '../../components/form/form.component';
 })
 export class ProductListComponent implements AfterViewInit, OnInit {
   productsService: ProductsService = inject(ProductsService);
-  products$: Observable<Product[]> = this.productsService.getProducts().pipe(
+  products$: Observable<Product[]> = this.productsService.products$.pipe(
     tap(products => {
       console.table(products);
       this.dataSource.data = products;
     })
-  );
+  )
   displayedColumns: string[] = ['id', 'name', 'sku', 'cost', 'actions'];
   dataSource: MatTableDataSource<Product> = new MatTableDataSource();
 
