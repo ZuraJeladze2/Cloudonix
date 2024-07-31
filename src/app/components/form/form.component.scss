@@ -9,7 +9,7 @@
         right: 15px;
     }
 
-    &-profile-fields{
+    &-profile-fields-general, &-profile-fields-custom{
         display: flex;
         flex-flow: row nowrap;
         justify-content: space-between;
