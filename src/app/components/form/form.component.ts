@@ -46,8 +46,38 @@ export class FormComponent {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { productId: number }, public dialogRef: MatDialogRef<FormComponent>) {
     this.product$ = this.productsService.getProduct(this.data.productId).pipe(
-      tap(product => this.form.patchValue(product))
+      tap(product => {
+        console.log(`Product "${product.name}" loaded successfully!`, product.profile.customProperties);
+      }),
+      tap(product => this.patchProductValues(product)),
+
     );
+  }
+  
+  patchProductValues(product: Product) {
+    this.form.patchValue({
+      name: product.name,
+      description: product.description,
+      sku: product.sku,
+      cost: product.cost,
+      profile: {
+        type: product.profile.type,
+        available: product.profile.available,
+        backlog: product.profile.backlog
+      }
+    });
+
+    const customPropertiesArray = this.form.get('profile.customProperties') as FormArray;
+    customPropertiesArray.clear();
+
+    if (product.profile.customProperties) {
+      Object.entries(product.profile.customProperties).forEach(([index, pair]) => {
+        customPropertiesArray.push(this.fb.group({
+          key: [pair.key],
+          value: [pair.value]
+        }));
+      });
+    }
   }
 
   closeDialog() {
