@@ -1,0 +1,11 @@
+.confirm-card {
+    height: 100%;
+    padding: 20px;
+
+    .confirm-dialog-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+}

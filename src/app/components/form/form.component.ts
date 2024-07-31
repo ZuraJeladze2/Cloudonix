@@ -5,12 +5,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { Product, PROFILE_TYPES, profileType } from '../../core/interfaces/product.interface';
 import { ProductsService } from '../../core/services/products.service';
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
-import { AsyncPipe, NgFor } from '@angular/common';
-import { MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-form',
@@ -18,7 +19,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
   imports: [
     MatCardModule, MatButtonModule, MatIconModule,
     MatDialogTitle, MatDialogContent, MatInputModule, MatSelectModule, MatCheckboxModule,
-    AsyncPipe, ReactiveFormsModule, NgFor
+    AsyncPipe, ReactiveFormsModule, NgFor, NgIf
   ],
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss']
@@ -28,7 +29,7 @@ export class FormComponent {
   product$: Observable<Product>
   profileTypes: readonly profileType[] = PROFILE_TYPES;
   fb: FormBuilder = inject(FormBuilder)
-
+  dialog: MatDialog = inject(MatDialog);
 
   form: FormGroup = new FormGroup({
     name: new FormControl<string>('', Validators.required),
@@ -43,7 +44,10 @@ export class FormComponent {
     })
   })
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { productId: number }, public dialogRef: MatDialogRef<FormComponent>) {
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { productId: number },
+    public dialogRef: MatDialogRef<FormComponent>
+  ) {
     if (this.data.productId) {
       this.product$ = this.productsService.getProduct(this.data.productId).pipe(
         tap(product => {
@@ -84,13 +88,32 @@ export class FormComponent {
     }
   }
 
+  openConfirmationDialog(product: Product) {
+    console.log('openConfirmationDialog', product);
+    
+    const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '560px',
+      height: '200px',
+      data: product
+    });
+
+    confirmDialogRef.afterClosed().pipe(
+      tap(result => {
+        console.log(`Dialog result: ${result}`);
+        if (result) {
+          this.deleteProduct(product.id);
+        }
+      })
+    ).subscribe();
+  }
+
   closeDialog() {
     this.dialogRef.close();
   }
 
   saveProduct(id?: number) {
     console.log('saveProduct', id);
-    
+
     id ? this.editProduct(id) : this.createProduct();
   }
 
