@@ -1,0 +1,8 @@
+<mat-card appearance="outlined" class="confirm-card">
+    <h4 mat-dialog-title class="confirm-dialog-title">Are you sure you want to delete this product?</h4>
+    
+    <div mat-dialog-actions class="confirm-dialog-actions">
+        <button mat-stroked-button (click)="onNoClick()">Cancel</button>
+        <button mat-stroked-button color="warn" (click)="onYesClick()">Delete</button>
+    </div>
+</mat-card>
