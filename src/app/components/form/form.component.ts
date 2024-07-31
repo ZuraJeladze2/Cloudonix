@@ -8,7 +8,7 @@ import { Observable, tap } from 'rxjs';
 import { AsyncPipe, NgFor } from '@angular/common';
 import { MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
@@ -32,12 +32,12 @@ export class FormComponent {
 
 
   form: FormGroup = new FormGroup({
-    name: new FormControl<string>(''),
-    description: new FormControl<string>(''),
+    name: new FormControl<string>('', Validators.required),
+    description: new FormControl<string>('', Validators.required),
     sku: new FormControl<string>({ value: '', disabled: true }),
-    cost: new FormControl<number>(0),
+    cost: new FormControl<number>(0, Validators.required),
     profile: new FormGroup({
-      type: new FormControl<profileType>('furniture'),
+      type: new FormControl<profileType>('furniture', Validators.required),
       available: new FormControl<boolean>(true),
       backlog: new FormControl<number | undefined>(undefined),
       customProperties: new FormArray([])
@@ -92,7 +92,6 @@ export class FormComponent {
       cost: rawValue.cost || undefined,
       profile: {
         ...rawValue.profile,
-        // customProperties: this.mapCustomProperties(this.customProperties)
       }
     };
 
@@ -100,14 +99,19 @@ export class FormComponent {
     console.log(this.customProperties.value);
     console.log(payload);
 
-
-
-    this.productsService.updateProduct(id, payload).pipe(
-      tap(x => {
-        console.log(`Product "${x.name}" updated successfully!`, x.profile.customProperties);
-        this.dialogRef.close();
-      })
-    ).subscribe();
+    if (this.form.valid) {
+      this.productsService.updateProduct(id, payload).pipe(
+        tap(x => {
+          console.log(`Product "${x.name}" updated successfully!`, x.profile.customProperties);
+          this.dialogRef.close();
+        })
+      ).subscribe();
+    } else {
+      // Handle invalid form case
+      const invalidControls = Object.keys(this.form.controls).filter(controlName => this.form.controls[controlName].invalid);
+      console.log('Form is invalid. Please fill in all required fields.');
+      console.log('Invalid controls:', invalidControls);
+    }
   }
 
   deleteProduct(id: number) {
