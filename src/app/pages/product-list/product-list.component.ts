@@ -40,6 +40,7 @@ export class ProductListComponent implements AfterViewInit, OnInit {
   openDialog(id: number) {
     const dialogRef = this.dialog.open(FormComponent, {
       width: '560px',
+      maxHeight: '90vh',
       data: { productId: id }
     });
 
