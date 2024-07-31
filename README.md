@@ -1,27 +1,20 @@
-# Cloudonix
+# Cloudonix Product Management Dashboard 
+🫡 Welcome to the Cloudonix Product Management Dashboard! This Angular application is designed to manage products, providing features such as authorization, product listing, creating, editing and deleting products.
+Built with:
+* Angular v18 🔥
+* RxJS 🔥
+* Angular lazy loading Routes 🔥
+* Angular Material 🔥
+* Reactive Forms 🔥
+  
+🚀 this dashboard offers a modern and efficient user interface. It features a simple and clean design aimed at providing a user-friendly experience. The emphasis is on simplicity and clarity, with a minimalist approach to design elements. This ensures ease of use and reduces cognitive load for users interacting with the application. The code is written with best practices using RxJS superpowers for state management and data streaming through the application. Streams are well controlled / optimized and not overused, thanks to RxJS operators.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.2.
 
-## Development server
+## How to run
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+First of all, after cloning the repository and opening it with IDE, traditionally run `npm i` to install node modules.
+Okay now we are ready to run our (I mean my) app:
 
-## Code scaffolding
+1. open terminal and run `ng serve` to run the app.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### That's it, congratulations, hope you'll like it!
