@@ -96,7 +96,6 @@ export class FormComponent {
     const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '560px',
       height: '200px',
-      data: product
     });
 
     confirmDialogRef.afterClosed().pipe(
