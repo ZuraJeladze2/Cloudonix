@@ -7,7 +7,9 @@
     <h6>Available: {{product.profile.available ? 'yes' : 'no'}}</h6>
     <h6>backlog: {{product.profile.backlog ? product.profile.backlog : 'backlog is unset'}}</h6>
     <br>
+    @if(product.profile.customProperties){
     <h5>Custom properties</h5>
+    }
     @for(keyValuePair of product.profile.customProperties; track keyValuePair){
     <h6>{{keyValuePair.key}}: {{keyValuePair.value}}</h6>
     }
