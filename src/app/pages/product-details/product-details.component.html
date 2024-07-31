@@ -1,13 +1,19 @@
 @if(product$ | async; as product){
-    <mat-card appearance="outlined" class="card">
-        <h3>{{product.name}}</h3>
-        <p>{{product.description}}</p>
-        <p>SKU: {{product.sku}}</p>
-        <p>Type: {{product.profile.type}}</p>
-        <pre> {{product.profile.customProperties | json}} </pre>
+<mat-card appearance="outlined" class="card">
+    <h3>{{product.name}}</h3>
+    <h6>Description: {{product.description}}</h6>
+    <h6>SKU: {{product.sku}}</h6>
+    <h6>Type: {{product.profile.type}}</h6>
+    <h6>Available: {{product.profile.available ? 'yes' : 'no'}}</h6>
+    <h6>backlog: {{product.profile.backlog ? product.profile.backlog : 'backlog is unset'}}</h6>
+    <br>
+    <h5>Custom properties</h5>
+    @for(keyValuePair of product.profile.customProperties; track keyValuePair){
+    <h6>{{keyValuePair.key}}: {{keyValuePair.value}}</h6>
+    }
 
-        <button mat-mini-fab class="card-edit-icon">
-            <mat-icon>edit</mat-icon>
-        </button>
-    </mat-card>
+    <button mat-mini-fab class="card-edit-icon" (click)="openDialog(product.id)">
+        <mat-icon>edit</mat-icon>
+    </button>
+</mat-card>
 }

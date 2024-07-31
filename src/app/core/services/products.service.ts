@@ -14,11 +14,17 @@ export class ProductsService {
   http: HttpClient = inject(HttpClient)
 
   getProducts(): Observable<Product[]> {
-      return this.http.get<Product[]>(`${this.apiUrl}/items`);
+      return this.http.get<Product[]>(`${this.apiUrl}/items`).pipe(
+        tap(x => {console.log(x);
+        })
+      )
   }
 
   getProduct(id: number): Observable<Product>{
-    return this.http.get<Product>(`${this.apiUrl}/items/${id}`).pipe(take(1))
+    return this.http.get<Product>(`${this.apiUrl}/items/${id}`).pipe(
+      tap(x => {console.log(x);
+      })
+    )
   }
 
   createProduct(product: Product): Observable<Product>{
