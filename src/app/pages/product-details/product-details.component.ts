@@ -40,7 +40,6 @@ export class ProductDetailsComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       this.router.navigate(['/products']);
-      console.log(`Dialog result: ${result}`);
     });
   }
 }

@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-form',
@@ -32,6 +33,7 @@ export class FormComponent {
   router: Router = inject(Router);
   product$: Observable<Product>
   profileTypes: readonly profileType[] = PROFILE_TYPES;
+  private snackBar = inject(MatSnackBar);
 
   form: FormGroup = new FormGroup({
     name: new FormControl<string>('', Validators.required),
@@ -52,11 +54,7 @@ export class FormComponent {
   ) {
     // check if productId is a number. using this way because if I wrote if (this.data.productId) it will be false if it's 0
     if (!isNaN(this.data.productId)) {
-      console.warn(this.data.productId, !isNaN(this.data.productId))
       this.product$ = this.productsService.getProduct(this.data.productId).pipe(
-        tap(product => {
-          console.log(`Product "${product.name}" loaded successfully!`, product.profile.customProperties);
-        }),
         tap(product => this.patchProductValues(product)),
       );
     }
@@ -93,8 +91,6 @@ export class FormComponent {
   }
 
   openConfirmationDialog(product: Product) {
-    console.log('openConfirmationDialog', product);
-
     const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '560px',
       height: '200px',
@@ -102,7 +98,6 @@ export class FormComponent {
 
     confirmDialogRef.afterClosed().pipe(
       tap(result => {
-        console.log(`Dialog result: ${result}`);
         if (result) {
           this.deleteProduct(product.id);
         }
@@ -131,27 +126,25 @@ export class FormComponent {
       }
     };
 
-    console.log(...rawValue.profile.customProperties);
-    console.log(this.customProperties.value);
-    console.log(payload);
-
     if (this.form.valid) {
       this.productsService.createProduct(payload).pipe(
         tap(x => {
-          console.log(`Product "${x.name}" created successfully!`, x.profile.customProperties);
+          this.snackBar.open(`Product created successfully!`, '', {
+            duration: 1750
+          })
           this.dialogRef.close();
         }),
         catchError(err => {
-          console.log('hahaha error happens here!');
-
           return throwError(() => err)
         })
       ).subscribe();
     } else {
       // Handle invalid form case
       const invalidControls = Object.keys(this.form.controls).filter(controlName => this.form.controls[controlName].invalid);
-      console.log('Form is invalid. Please fill in all required fields.');
-      console.log('Invalid controls:', invalidControls);
+      console.error('Invalid controls:', invalidControls);
+      this.snackBar.open('Please fill in all required fields.', 'dismiss', {
+        duration: 1750
+      })
     }
   }
 
@@ -166,34 +159,34 @@ export class FormComponent {
       }
     };
 
-    console.log(...rawValue.profile.customProperties);
-    console.log(this.customProperties.value);
-    console.log(payload);
-
     if (this.form.valid) {
       this.productsService.updateProduct(id, payload).pipe(
         tap(x => {
-          console.log(`Product "${x.name}" updated successfully!`, x.profile.customProperties);
+          this.snackBar.open(`Product updated successfully!`, 'dismiss', {
+            duration: 1750
+          })
           this.dialogRef.close();
         }),
         catchError(err => {
-          console.log('hahaha error happens here!');
-
           return throwError(() => err)
         })
       ).subscribe();
     } else {
       // Handle invalid form case
       const invalidControls = Object.keys(this.form.controls).filter(controlName => this.form.controls[controlName].invalid);
-      console.log('Form is invalid. Please fill in all required fields.');
-      console.log('Invalid controls:', invalidControls);
+      console.error('Invalid controls:', invalidControls);
+      this.snackBar.open('Please fill in all required fields.', 'dismiss', {
+        duration: 1750
+      })
     }
   }
 
   deleteProduct(id: number) {
     this.productsService.deleteProduct(id).pipe(
       tap(() => {
-        console.log(`Product deleted successfully!`);
+        this.snackBar.open('Product deleted successfully!', '', {
+          duration: 1750
+        })
         this.router.navigate(['/products']);
         this.dialogRef.close();
       })
