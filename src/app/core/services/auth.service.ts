@@ -1,18 +1,23 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, tap, catchError, take } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private authTokenKey = 'authToken';
+  private snackBar = inject(MatSnackBar);
+  
   router: Router = inject(Router);
 
   login(authKey: string): Observable<boolean> {
     // Double-checking the token
     if (authKey.length < 1) {
-      console.error('Login failed: enter authKey');
+      this.snackBar.open('Login failed: enter authKey', 'close', {
+        duration: 2000
+      });
       return of(false);
     }
 
@@ -23,7 +28,6 @@ export class AuthService {
         this.router.navigate(['/products']);
       }),
       catchError(error => {
-        console.error('Login failed', error);
         return of(false);
       }),
       take(1)

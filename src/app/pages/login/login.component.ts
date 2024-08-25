@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../core/services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -14,12 +15,15 @@ import { AuthService } from '../../core/services/auth.service';
 export class LoginComponent {
   authKey: string = ''
   authService: AuthService = inject(AuthService)
+  private snackBar = inject(MatSnackBar);
 
   onSubmit(form: NgForm) {
     if (form.valid) {
       this.authService.login(this.authKey).subscribe()
     } else {
-      console.error('Form is invalid, please provide an authorization key.');
+      this.snackBar.open('Login failed, enter authorization Key', 'close', {
+        duration: 2000
+      });
     }
   }
 }

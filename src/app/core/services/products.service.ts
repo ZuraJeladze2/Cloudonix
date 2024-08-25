@@ -30,48 +30,28 @@ export class ProductsService {
 
   //api
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/items`).pipe(
-      tap(x => {
-        console.log(x);
-      })
-    )
+    return this.http.get<Product[]>(`${this.apiUrl}/items`)
   }
 
   getProduct(id: number): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/items/${id}`).pipe(
-      tap(x => {
-        console.log(x);
-      })
-    )
+    return this.http.get<Product>(`${this.apiUrl}/items/${id}`)
   }
 
   createProduct(product: Product): Observable<Product> {
     return this.http.post<Product>(`${this.apiUrl}/items`, product).pipe(
-      take(1),
-      tap(x => {
-        this.loadProducts()
-      }
-      )
+      take(1)
     )
   }
 
   updateProduct(id: number, updatedProduct: Partial<Product>): Observable<Product> {
     return this.http.patch<Product>(`${this.apiUrl}/items/${id}`, updatedProduct).pipe(
-      take(1),
-      tap(x => {
-        this.loadProducts()
-      }
-      )
+      take(1)
     )
   }
 
   deleteProduct(id: number): Observable<null> {
     return this.http.delete<null>(`${this.apiUrl}/items/${id}`).pipe(
-      take(1),
-      tap(x => {
-        this.loadProducts()
-      }
-      )
+      take(1)
     )
   }
 }

@@ -14,6 +14,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FormComponent } from '../../components/form/form.component';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-product-list',
@@ -38,6 +39,7 @@ export class ProductListComponent implements AfterViewInit, OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   readonly dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
 
   openDialog(id?: number) {
     const dialogRef = this.dialog.open(FormComponent, {
@@ -47,9 +49,7 @@ export class ProductListComponent implements AfterViewInit, OnInit {
                                         // random string is definetly not a number, but empty one somehow is.
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
+    dialogRef.afterClosed().subscribe();
   }
 
   ngOnInit() {
@@ -72,7 +72,9 @@ export class ProductListComponent implements AfterViewInit, OnInit {
         if (result) {
           this.productsService.deleteProduct(id).pipe(
             tap(() => {
-              console.log(`Product deleted successfully!`);
+              this.snackBar.open('Product deleted successfully!', 'close', {
+                duration: 1750
+              });
               this.router.navigate(['/products']);
             }),
             take(1)
