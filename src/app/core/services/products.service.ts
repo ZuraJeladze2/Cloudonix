@@ -12,12 +12,12 @@ export class ProductsService {
   apiUrl: string = environments.apiUrl
   authKey: string | null = inject(AuthService).getAuthToken()
   http: HttpClient = inject(HttpClient)
-  productsSubject: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>([]);
+  private productsSubject: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>([]);
 
   constructor() {
     this.loadProducts()
   }
-  
+
   get products$(): Observable<Product[]> {
     return this.productsSubject.asObservable();
   }
@@ -28,7 +28,7 @@ export class ProductsService {
     });
   }
 
-    //api
+  //api
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.apiUrl}/items`).pipe(
       tap(x => {

@@ -52,6 +52,7 @@ export class FormComponent {
   ) {
     // check if productId is a number. using this way because if I wrote if (this.data.productId) it will be false if it's 0
     if (!isNaN(this.data.productId)) {
+      console.warn(this.data.productId, !isNaN(this.data.productId))
       this.product$ = this.productsService.getProduct(this.data.productId).pipe(
         tap(product => {
           console.log(`Product "${product.name}" loaded successfully!`, product.profile.customProperties);
@@ -78,7 +79,7 @@ export class FormComponent {
       }
     });
 
-    const customPropertiesArray = this.form.get('profile.customProperties') as FormArray;
+    const customPropertiesArray = this.customProperties;
     customPropertiesArray.clear();
 
     if (product.profile.customProperties) {
@@ -93,7 +94,7 @@ export class FormComponent {
 
   openConfirmationDialog(product: Product) {
     console.log('openConfirmationDialog', product);
-    
+
     const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '560px',
       height: '200px',
@@ -199,12 +200,12 @@ export class FormComponent {
     ).subscribe();
   }
 
-
-
-
   //customProperties
+  get customProperties(): FormArray {
+    return this.form.get('profile.customProperties') as FormArray;
+  }
   addField(key: string, value: any) {
-    const customProperties = this.form.get('profile.customProperties') as FormArray;
+    const customProperties = this.customProperties;
     if (customProperties) {
       const newField = this.fb.group({
         key: [key],
@@ -214,14 +215,10 @@ export class FormComponent {
     }
   }
 
-  get customProperties(): FormArray {
-    return this.form.get('profile.customProperties') as FormArray;
-  }
   removeField(index: number) {
-    const customProperties = this.form.get('profile.customProperties') as FormArray;
+    const customProperties = this.customProperties;
     if (customProperties) {
       customProperties.removeAt(index);
     }
   }
-
 }

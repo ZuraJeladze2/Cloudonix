@@ -43,7 +43,8 @@ export class ProductListComponent implements AfterViewInit, OnInit {
     const dialogRef = this.dialog.open(FormComponent, {
       width: '560px',
       maxHeight: '90vh',
-      data: { productId: id ?? null }
+      data: { productId: id ?? 'no id' } // adding random string so empty modal opens without bugs for validation: !isNaN(id)
+                                        // random string is definetly not a number, but empty one somehow is.
     });
 
     dialogRef.afterClosed().subscribe(result => {
