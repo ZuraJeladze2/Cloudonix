@@ -1,5 +1,5 @@
 import { Component, inject, ViewChild, AfterViewInit, OnInit } from '@angular/core';
-import { Observable, pipe, take, tap } from 'rxjs';
+import { Observable, pipe, Subject, take, takeUntil, tap } from 'rxjs';
 import { ProductsService } from '../../core/services/products.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
@@ -24,6 +24,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./product-list.component.scss']
 })
 export class ProductListComponent implements AfterViewInit, OnInit {
+  private unsubscribe$ = new Subject<void>();
   productsService: ProductsService = inject(ProductsService);
   router: Router = inject(Router);
   products$: Observable<Product[]> = this.productsService.products$.pipe(
@@ -49,11 +50,15 @@ export class ProductListComponent implements AfterViewInit, OnInit {
                                         // random string is definetly not a number, but empty one somehow is.
     });
 
-    dialogRef.afterClosed().subscribe();
+    dialogRef.afterClosed().pipe(
+      take(1)
+    ).subscribe();
   }
 
   ngOnInit() {
-    this.products$.subscribe();
+    this.products$.pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe();
   }
 
   ngAfterViewInit() {
@@ -92,5 +97,10 @@ export class ProductListComponent implements AfterViewInit, OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

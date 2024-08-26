@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Product, PROFILE_TYPES, profileType } from '../../core/interfaces/product.interface';
 import { ProductsService } from '../../core/services/products.service';
-import { catchError, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, Observable, of, take, tap, throwError } from 'rxjs';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
@@ -101,7 +101,8 @@ export class FormComponent {
         if (result && product.id) {
           this.deleteProduct(product.id);
         }
-      })
+      }),
+      take(1)
     ).subscribe();
   }
 
