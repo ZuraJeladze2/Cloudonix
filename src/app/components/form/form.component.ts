@@ -110,7 +110,7 @@ export class FormComponent {
   }
 
   saveProduct(id?: number) {
-    id ? this.editProduct(id) : this.createProduct();
+    id !== null && id !== undefined ? this.editProduct(id) : this.createProduct();
   }
 
   createProduct() {
