@@ -72,7 +72,7 @@ export class ProductListComponent implements AfterViewInit, OnInit {
         if (result) {
           this.productsService.deleteProduct(id).pipe(
             tap(() => {
-              this.snackBar.open('Product deleted successfully!', 'close', {
+              this.snackBar.open('Product deleted successfully!', 'dismiss', {
                 duration: 1750
               });
               this.router.navigate(['/products']);
