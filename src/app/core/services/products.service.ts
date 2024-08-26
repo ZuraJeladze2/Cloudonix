@@ -39,7 +39,10 @@ export class ProductsService {
 
   createProduct(product: Product): Observable<Product> {
     return this.http.post<Product>(`${this.apiUrl}/items`, product).pipe(
-      take(1)
+      take(1),
+      tap(x => {
+        this.loadProducts()
+      })
     )
   }
 
