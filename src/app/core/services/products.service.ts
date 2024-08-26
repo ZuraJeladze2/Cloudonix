@@ -45,13 +45,19 @@ export class ProductsService {
 
   updateProduct(id: number, updatedProduct: Partial<Product>): Observable<Product> {
     return this.http.patch<Product>(`${this.apiUrl}/items/${id}`, updatedProduct).pipe(
-      take(1)
+      take(1),
+      tap(x => {
+        this.loadProducts()
+      })
     )
   }
 
   deleteProduct(id: number): Observable<null> {
     return this.http.delete<null>(`${this.apiUrl}/items/${id}`).pipe(
-      take(1)
+      take(1),
+      tap(x => {
+        this.loadProducts()
+      })
     )
   }
 }
