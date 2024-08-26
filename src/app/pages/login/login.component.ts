@@ -21,7 +21,7 @@ export class LoginComponent {
     if (form.valid) {
       this.authService.login(this.authKey).subscribe()
     } else {
-      this.snackBar.open('Login failed, enter authorization Key', 'close', {
+      this.snackBar.open('Login failed, enter authorization Key', 'dismiss', {
         duration: 2000
       });
     }

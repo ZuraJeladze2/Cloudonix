@@ -15,7 +15,7 @@ export class AuthService {
   login(authKey: string): Observable<boolean> {
     // Double-checking the token
     if (authKey.length < 1) {
-      this.snackBar.open('Login failed: enter authKey', 'close', {
+      this.snackBar.open('Login failed: enter authKey', 'dismiss', {
         duration: 2000
       });
       return of(false);
