@@ -98,7 +98,7 @@ export class FormComponent {
 
     confirmDialogRef.afterClosed().pipe(
       tap(result => {
-        if (result) {
+        if (result && product.id) {
           this.deleteProduct(product.id);
         }
       })
@@ -110,13 +110,9 @@ export class FormComponent {
   }
 
   saveProduct(id?: number) {
-    id !== null && id !== undefined ? this.editProduct(id) : this.createProduct();
-  }
-
-  createProduct() {
     const rawValue = this.form.getRawValue();
     const payload: Product = {
-      id: Math.floor(Math.random() * 10000),
+      id: undefined,
       name: rawValue.name || undefined,
       description: rawValue.description || undefined,
       sku: rawValue.sku || undefined,
@@ -127,19 +123,14 @@ export class FormComponent {
     };
 
     if (this.form.valid) {
-      this.productsService.createProduct(payload).pipe(
-        tap(x => {
-          this.snackBar.open(`Product created successfully!`, '', {
-            duration: 1750
-          })
-          this.dialogRef.close();
-        }),
-        catchError(err => {
-          return throwError(() => err)
-        })
-      ).subscribe();
+      console.log(id);
+
+      if (id !== undefined && !isNaN(id)) {
+        this.handleUpdateProduct(id, payload);
+      } else {
+        this.handleCreateProduct(payload);
+      }
     } else {
-      // Handle invalid form case
       const invalidControls = Object.keys(this.form.controls).filter(controlName => this.form.controls[controlName].invalid);
       console.error('Invalid controls:', invalidControls);
       this.snackBar.open('Please fill in all required fields.', 'dismiss', {
@@ -148,37 +139,34 @@ export class FormComponent {
     }
   }
 
-  editProduct(id: number) {
-    const rawValue = this.form.getRawValue();
-    const payload: Partial<Product> = {
-      name: rawValue.name || undefined,
-      description: rawValue.description || undefined,
-      cost: rawValue.cost || undefined,
-      profile: {
-        ...rawValue.profile,
-      }
-    };
-
-    if (this.form.valid) {
-      this.productsService.updateProduct(id, payload).pipe(
-        tap(x => {
-          this.snackBar.open(`Product updated successfully!`, 'dismiss', {
-            duration: 1750
-          })
-          this.dialogRef.close();
-        }),
-        catchError(err => {
-          return throwError(() => err)
+  handleUpdateProduct(id: number, payload: Product) {
+    payload.id = id;
+    delete (payload as Partial<Product>).sku;
+    this.productsService.updateProduct(id, payload).pipe(
+      tap(x => {
+        this.snackBar.open(`Product updated successfully!`, 'dismiss', {
+          duration: 1750
         })
-      ).subscribe();
-    } else {
-      // Handle invalid form case
-      const invalidControls = Object.keys(this.form.controls).filter(controlName => this.form.controls[controlName].invalid);
-      console.error('Invalid controls:', invalidControls);
-      this.snackBar.open('Please fill in all required fields.', 'dismiss', {
-        duration: 1750
+        this.dialogRef.close();
+      }),
+      catchError(err => {
+        return throwError(() => err)
       })
-    }
+    ).subscribe();
+  }
+
+  handleCreateProduct(payload: Product) {
+    this.productsService.createProduct(payload).pipe(
+      tap(x => {
+        this.snackBar.open(`Product created successfully!`, '', {
+          duration: 1750
+        })
+        this.dialogRef.close();
+      }),
+      catchError(err => {
+        return throwError(() => err)
+      })
+    ).subscribe();
   }
 
   deleteProduct(id: number) {
